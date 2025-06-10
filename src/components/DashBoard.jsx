@@ -2,27 +2,18 @@
 
 import { useState } from "react"
 import "../styles/Dashboard.css"
-import Cumulative1 from "./Cumulative1"
-import ProjectForm from "./ProjectForm/ProjectForm"
-import RegistrationForm from "./RegistrationForm/Registrationform"
-import SchoolAdminPanel from "./SchoolTable"
+import MonthlyBudget from "./Monthly Budget/MonthlyBudget"
 import Sidebar from "./Sidebar"
 
 const Dashboard = () => {
-  const [activeSection, setActiveSection] = useState("School Details")
+  const [activeSection, setActiveSection] = useState("Monthly Budget")
 
   const renderSection = () => {
     switch (activeSection) {
-      case "School Details":
-        return <SchoolAdminPanel />
-      case "Registration Form":
-        return <RegistrationForm />
-      case "Project Form":
-        return <ProjectForm />
-      case "Cumulative1":
-        return <Cumulative1 />
+      case "Monthly Budget":
+        return <MonthlyBudget />
       default:
-        return <SchoolAdminPanel />
+        return <MonthlyBudget />
     }
   }
 

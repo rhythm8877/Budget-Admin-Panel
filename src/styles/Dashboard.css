@@ -1,6 +1,6 @@
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr 5fr;
+  grid-template-columns: 280px 1fr;
   min-height: 100vh;
   background-color: var(--main-bg);
 }
@@ -9,6 +9,26 @@
   padding: 2rem;
   overflow-y: auto;
   background-color: var(--main-bg);
+}
+
+.main-content-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+  text-align: center;
+}
+
+.main-content-placeholder h1 {
+  color: var(--primary-color, #333);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.main-content-placeholder p {
+  color: var(--text-secondary, #666);
+  font-size: 1.2rem;
 }
 
 @media (max-width: 768px) {

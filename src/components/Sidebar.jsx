@@ -5,44 +5,13 @@ import "../styles/Sidebar.css";
 const Sidebar = ({ activeSection, setActiveSection }) => {
   const navItems = [
     {
-      id: "School Details",
-      label: "School Details",
+      id: "Monthly Budget",
+      label: "Monthly Budget",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-          <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
-      )
-    },
-    {
-      id: "Registration Form",
-      label: "School Registration Form",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-        </svg>
-      )
-    },
-    {
-      id: "Project Form",
-      label: "New Project Form",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-        </svg>
-      )
-    },
-    {
-      id: "Cumulative1",
-      label: "Cumulative 1",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 12V7H5a2 2 0 0 1-2-2V3"></path>
-          <path d="M3 21V17a2 2 0 0 1 2-2h14"></path>
-          <path d="M18 12h-2"></path>
-          <path d="M8 12h8"></path>
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
         </svg>
       )
     }
@@ -53,7 +22,7 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
       <div className="logo-container">
         {/* <img src="/logo.svg" alt="Kohima Science College" className="logo" /> */}
         <div className="logo-text">
-          <span className="college-name">School</span>
+          <span className="college-name">Budget</span>
           <span className="college-type">Admin Panel</span>
         </div>
       </div>
