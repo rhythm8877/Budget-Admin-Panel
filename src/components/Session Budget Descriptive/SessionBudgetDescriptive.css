@@ -7,7 +7,7 @@
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-.state-plan-container {
+.session-budget-descriptive-container {
   max-width: 100%;
   width: 100%;
   margin: 0 auto;
@@ -49,8 +49,7 @@ header {
   margin-bottom: 30px;
 }
 
-.sector-selector,
-.month-selector,
+.department-selector,
 .session-selector {
   display: flex;
   align-items: center;
@@ -99,9 +98,9 @@ td {
   white-space: normal;
 }
 
-.department-name-column {
-  min-width: 200px;
-  max-width: 250px;
+.project-name-column {
+  min-width: 300px;
+  max-width: 400px;
 }
 
 .sl-no-column {
@@ -111,31 +110,10 @@ td {
   white-space: nowrap;
 }
 
-.date-column {
-  min-width: 100px;
-  max-width: 120px;
-}
-
-.debit-column,
-.credit-column,
-.amount-left-column {
-  min-width: 150px;
+.approved-outlays-column,
+.earmarked-column {
+  min-width: 180px;
   width: auto;
-}
-
-.table-input {
-  width: 100%;
-  border: none;
-  background: #f8f9fa;
-  font-size: 14px;
-  padding: 4px 6px;
-  outline: none;
-  font-family: inherit;
-  border-radius: 4px;
-}
-
-.table-input:focus {
-  background-color: #f0f0f0;
 }
 
 .currency-display {
@@ -158,31 +136,13 @@ td {
   font-weight: 500;
 }
 
+.negotiated-loan-amount {
+  font-weight: 500;
+  color: #000;
+}
+
 tbody tr:hover {
   background-color: #f8f9fa;
-}
-
-.sector-total-row {
-  background-color: #eef2ff;
-  border-top: 1px solid var(--primary-color);
-  border-bottom: 1px solid var(--primary-color);
-}
-
-.sector-total-row td {
-  font-weight: bold;
-  color: var(--primary-color);
-  padding: 12px 20px;
-}
-
-.sector-total-label {
-  font-size: 15px;
-  font-weight: bold;
-  color: var(--primary-color);
-}
-
-.sector-total-amount {
-  font-weight: bold;
-  color: var(--primary-color);
 }
 
 .grand-total-row {
@@ -211,7 +171,7 @@ tbody tr:hover {
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-  .state-plan-container {
+  .session-budget-descriptive-container {
     padding: 10px;
   }
 
@@ -229,8 +189,7 @@ tbody tr:hover {
     align-items: stretch;
   }
 
-  .sector-selector,
-  .month-selector,
+  .department-selector,
   .session-selector {
     flex-direction: column;
     align-items: flex-start;
@@ -257,7 +216,7 @@ tbody tr:hover {
 }
 
 @media (max-width: 480px) {
-  .state-plan-container {
+  .session-budget-descriptive-container {
     padding: 10px;
   }
 

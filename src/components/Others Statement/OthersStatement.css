@@ -7,7 +7,7 @@
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-.state-plan-container {
+.others-statement-container {
   max-width: 100%;
   width: 100%;
   margin: 0 auto;
@@ -49,7 +49,7 @@ header {
   margin-bottom: 30px;
 }
 
-.sector-selector,
+.department-selector,
 .month-selector,
 .session-selector {
   display: flex;
@@ -99,9 +99,9 @@ td {
   white-space: normal;
 }
 
-.department-name-column {
-  min-width: 200px;
-  max-width: 250px;
+.project-name-column {
+  min-width: 300px;
+  max-width: 400px;
 }
 
 .sl-no-column {
@@ -162,29 +162,6 @@ tbody tr:hover {
   background-color: #f8f9fa;
 }
 
-.sector-total-row {
-  background-color: #eef2ff;
-  border-top: 1px solid var(--primary-color);
-  border-bottom: 1px solid var(--primary-color);
-}
-
-.sector-total-row td {
-  font-weight: bold;
-  color: var(--primary-color);
-  padding: 12px 20px;
-}
-
-.sector-total-label {
-  font-size: 15px;
-  font-weight: bold;
-  color: var(--primary-color);
-}
-
-.sector-total-amount {
-  font-weight: bold;
-  color: var(--primary-color);
-}
-
 .grand-total-row {
   background-color: #f0f0f0;
   border-top: 2px solid var(--primary-color);
@@ -211,7 +188,7 @@ tbody tr:hover {
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-  .state-plan-container {
+  .others-statement-container {
     padding: 10px;
   }
 
@@ -229,7 +206,7 @@ tbody tr:hover {
     align-items: stretch;
   }
 
-  .sector-selector,
+  .department-selector,
   .month-selector,
   .session-selector {
     flex-direction: column;
@@ -257,7 +234,7 @@ tbody tr:hover {
 }
 
 @media (max-width: 480px) {
-  .state-plan-container {
+  .others-statement-container {
     padding: 10px;
   }
 

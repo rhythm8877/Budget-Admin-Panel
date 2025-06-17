@@ -349,7 +349,7 @@ const SessionBudget = () => {
       <div className="data-container">
         <div className="control-panel-filters">
           <div className="department-selector">
-            <span className="label-text">Department:</span>
+            <span className="label-text">Sector:</span>
             <Select
               value={selectedDepartment}
               onChange={setSelectedDepartment}

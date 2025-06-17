@@ -5,9 +5,12 @@ import "../styles/Dashboard.css"
 import ApprovedProject from "./Approved Project/ApprovedProject"
 import NewProjectForm from "./New Project Form/NewProjectForm"
 import OthersForm from "./Others Form/OthersForm"
+import OthersStatement from "./Others Statement/OthersStatement"
 import PlanningForm from "./Planning Form/PlanningForm"
+import SessionBudgetDescriptive from "./Session Budget Descriptive/SessionBudgetDescriptive"
 import SessionBudget from "./Session Budget/SessionBudget"
 import Sidebar from "./Sidebar"
+import StatePlan from "./State Plan/StatePlan"
 
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState("Others Form")
@@ -24,6 +27,12 @@ const Dashboard = () => {
         return <ApprovedProject />
       case "Session Budget":
         return <SessionBudget />
+      case "Session Budget Descriptive":
+        return <SessionBudgetDescriptive />
+      case "State Plan":
+        return <StatePlan />
+      case "Others Statement":
+        return <OthersStatement />
       default:
         return <OthersForm />
     }
