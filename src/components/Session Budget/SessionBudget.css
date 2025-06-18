@@ -65,8 +65,23 @@ header {
 
 .table-container {
   overflow-x: auto;
-  margin-top: 20px;
+  margin-top: 10px;
   width: 100%;
+  position: relative;
+}
+
+.table-header {
+  position: relative;
+  text-align: right;
+  margin-bottom: 5px;
+  height: 20px;
+}
+
+.rs-in-lakh {
+  font-weight: bold;
+  color: #000;
+  font-size: 16px;
+  padding-right: 5px;
 }
 
 table {
@@ -92,10 +107,64 @@ th {
   text-align: left;
 }
 
-td {
-  text-align: left;
-  word-wrap: break-word;
-  white-space: normal;
+thead th {
+  padding: 10px 20px;
+  vertical-align: middle;
+  text-align: center;
+  height: 50px;
+}
+
+tr:first-child th {
+  border-bottom: none;
+  text-align: center;
+  height: 60px;
+}
+
+tr:first-child th.of-which-column {
+  border-bottom: 1px solid var(--border-color) !important;
+  padding-bottom: 6px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.of-which-column {
+  text-align: center;
+  padding-bottom: 2px;
+}
+
+.of-which-header {
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.subheader-row th {
+  border-top: none;
+  text-align: center;
+  background-color: var(--primary-light);
+  padding-top: 6px;
+  padding-bottom: 6px;
+  vertical-align: middle;
+  height: 50px;
+}
+
+.earmarked-header, .loan-header {
+  text-align: center;
+  font-weight: 600;
+  padding-top: 2px;
+}
+
+.sector-total-row td {
+  font-weight: bold;
+  color: var(--primary-color);
+  padding: 12px 20px;
+}
+
+.earmarked-total, .loan-total {
+  font-weight: bold;
+  color: #000;
+  font-size: 16px;
+  text-align: center;
 }
 
 .department-name-column {
@@ -160,18 +229,6 @@ tbody tr:hover {
   background-color: #f8f9fa;
 }
 
-.sector-total-row {
-  background-color: #eef2ff;
-  border-top: 1px solid var(--primary-color);
-  border-bottom: 1px solid var(--primary-color);
-}
-
-.sector-total-row td {
-  font-weight: bold;
-  color: var(--primary-color);
-  padding: 12px 20px;
-}
-
 .sector-total-label {
   font-size: 15px;
   font-weight: bold;
@@ -207,7 +264,6 @@ tbody tr:hover {
   font-size: 16px;
 }
 
-/* Mobile Responsiveness */
 @media (max-width: 768px) {
   .session-budget-container {
     padding: 10px;
@@ -273,4 +329,28 @@ tbody tr:hover {
   th, td {
     padding: 6px 8px;
   }
+}
+
+.sector-total-row {
+  background-color: #eef2ff;
+  border-top: 1px solid var(--primary-color);
+  border-bottom: 1px solid var(--primary-color);
+}
+
+.sector-total-amount {
+  text-align: center;
+}
+
+.amount-column {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.empty-header {
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+thead th {
+  text-align: center;
 } 

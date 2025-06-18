@@ -325,7 +325,7 @@ const SessionBudget = () => {
               <td className="approved-outlays-column sector-total-amount">
                 ₹{formatNumber(sectorTotals[sector].approvedOutlays)}
               </td>
-              <td className="earmarked-column sector-total-amount">
+              <td className="sector-total-amount">
                 ₹{formatNumber(sectorTotals[sector].earmarked)}
               </td>
               <td className="sector-total-amount">
@@ -373,14 +373,27 @@ const SessionBudget = () => {
         </div>
 
         <div className="table-container">
+          <div className="table-header">
+            <span className="rs-in-lakh">Rs. in lakh</span>
+          </div>
           <table>
             <thead>
               <tr>
-                <th className="sl-no-column">Sl No.</th>
-                <th>Department Name</th>
-                <th className="approved-outlays-column">Approved Outlays for {selectedSession.value}</th>
-                <th className="earmarked-column">Earmarked/Core activities</th>
-                <th>Negotiated Loan</th>
+                <th className="sl-no-column">Sl.No</th>
+                <th>Department</th>
+                <th className="amount-column">
+                  Approved Outlays for<br />{selectedSession.value}
+                </th>
+                <th colSpan="2" className="of-which-column">
+                  Of which specified
+                </th>
+              </tr>
+              <tr className="subheader-row">
+                <th className="empty-header"></th>
+                <th className="empty-header"></th>
+                <th className="empty-header"></th>
+                <th className="earmarked-header">Earmarked/Core<br />activities</th>
+                <th className="loan-header">Negotiated Loan</th>
               </tr>
             </thead>
             <tbody>
@@ -393,10 +406,10 @@ const SessionBudget = () => {
                 <td className="approved-outlays-column grand-total-amount">
                   ₹{grandTotals.totalApprovedOutlays > 0 ? formatNumber(grandTotals.totalApprovedOutlays) : "0"}
                 </td>
-                <td className="earmarked-column grand-total-amount">
+                <td className="earmarked-total">
                   ₹{grandTotals.totalEarmarked > 0 ? formatNumber(grandTotals.totalEarmarked) : "0"}
                 </td>
-                <td className="grand-total-amount">
+                <td className="loan-total">
                   ₹{grandTotals.totalNegotiatedLoan > 0 ? formatNumber(grandTotals.totalNegotiatedLoan) : "0"}
                 </td>
               </tr>

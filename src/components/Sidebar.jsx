@@ -41,6 +41,17 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
       )
     },
     {
+      id: "Project Approval",
+      label: "Project Approval",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <polyline points="9 15 12 18 22 8"></polyline>
+        </svg>
+      )
+    },
+    {
       id: "Approved Project",
       label: "Approved Project",
       icon: (

@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select from "react-select";
-import "./SessionBudgetDescriptive.css";
+import "./ProjectApproval.css";
 
-const SessionBudgetDescriptive = () => {
+const ProjectApproval = () => {
   const [selectedDepartment, setSelectedDepartment] = useState({ value: "all", label: "All" });
-  const [selectedSession, setSelectedSession] = useState({ value: "2025-26", label: "2025-26" });
+  const [selectedStatus, setSelectedStatus] = useState({ value: "approved", label: "Approved" });
+  const [projectData, setProjectData] = useState([]);
 
-  // Department mapping from PlanningForm.jsx
+  // Department mapping
   const departmentMap = {
     agri: [
       { value: "agriculture", label: "Agriculture" },
@@ -110,7 +111,7 @@ const SessionBudgetDescriptive = () => {
     ]
   };
 
-  // Project mapping from OthersForm.jsx
+  // Project mapping
   const projectMap = {
     // AGRICULTURE
     agriculture: [
@@ -915,11 +916,18 @@ const SessionBudgetDescriptive = () => {
     ]
   };
 
+  // Status options
+  const statusOptions = [
+    { value: "approved", label: "Approved" },
+    { value: "rejected", label: "Rejected" },
+    { value: "not_viewed", label: "Not Viewed" }
+  ];
+
   // Create a flat list of all departments for the dropdown
   const createDepartmentOptions = () => {
     const allDepartments = [{ value: "all", label: "All" }];
     
-    // Flatten the department structure from departmentMap
+    // Flatten the department structure
     Object.keys(departmentMap).forEach(sector => {
       departmentMap[sector].forEach(dept => {
         allDepartments.push(dept);
@@ -929,80 +937,7 @@ const SessionBudgetDescriptive = () => {
     return allDepartments;
   };
 
-  // Generate session options from 2015-16 to current year+1 (2025-26)
-  const generateSessionOptions = () => {
-    const options = [];
-    for (let year = 2015; year <= 2025; year++) {
-      const session = `${year}-${(year + 1).toString().slice(-2)}`;
-      options.push({ value: session, label: session });
-    }
-    return options;
-  };
-
   const departmentOptions = createDepartmentOptions();
-  const sessionOptions = generateSessionOptions();
-
-  // Generate budget data for projects based on selected department
-  const generateBudgetData = () => {
-    let id = 1;
-    const data = [];
-    
-    if (selectedDepartment.value === "all") {
-      // If "All" is selected, show projects from all departments
-      Object.keys(projectMap).forEach(dept => {
-        if (projectMap[dept]) {
-          projectMap[dept].forEach(project => {
-            // Generate random values for demonstration
-            const approvedOutlays = Math.floor(Math.random() * 300000) + 50000;
-            const negotiatedLoan = Math.floor(Math.random() * approvedOutlays * 0.7);
-            
-            // Find the department label
-            let departmentLabel = "";
-            Object.keys(departmentMap).forEach(sector => {
-              const foundDept = departmentMap[sector].find(d => d.value === dept);
-              if (foundDept) {
-                departmentLabel = foundDept.label;
-              }
-            });
-            
-            data.push({
-              id: id++,
-              department: dept,
-              departmentLabel: departmentLabel,
-              projectName: project.label,
-              approvedOutlays: approvedOutlays.toString(),
-              negotiatedLoan: negotiatedLoan.toString()
-            });
-          });
-        }
-      });
-    } else {
-      // If a specific department is selected, show only its projects
-      const deptProjects = projectMap[selectedDepartment.value];
-      
-      if (deptProjects && deptProjects.length > 0) {
-        deptProjects.forEach(project => {
-          // Generate random values for demonstration
-          const approvedOutlays = Math.floor(Math.random() * 300000) + 50000;
-          const negotiatedLoan = Math.floor(Math.random() * approvedOutlays * 0.7);
-          
-          data.push({
-            id: id++,
-            department: selectedDepartment.value,
-            departmentLabel: selectedDepartment.label,
-            projectName: project.label,
-            approvedOutlays: approvedOutlays.toString(),
-            negotiatedLoan: negotiatedLoan.toString()
-          });
-        });
-      }
-      // If no projects found for the selected department, data will remain an empty array
-    }
-    
-    return data;
-  };
-
-  const budgetData = generateBudgetData();
 
   // Format number for display
   const formatNumber = (num) => {
@@ -1010,46 +945,73 @@ const SessionBudgetDescriptive = () => {
     return parseFloat(num).toLocaleString();
   };
 
-  // Calculate department totals for "All" view
-  const calculateDepartmentTotals = () => {
-    const departmentTotals = {};
+  // Generate initial project data
+  useEffect(() => {
+    const initialData = [];
+    let id = 1;
     
-    budgetData.forEach(item => {
-      const dept = item.department;
-      
-      if (!departmentTotals[dept]) {
-        departmentTotals[dept] = {
-          departmentLabel: item.departmentLabel,
-          approvedOutlays: 0,
-          negotiatedLoan: 0
-        };
+    Object.keys(projectMap).forEach(dept => {
+      if (projectMap[dept]) {
+        projectMap[dept].forEach(project => {
+          // Find the department label
+          let departmentLabel = "";
+          Object.keys(departmentMap).forEach(sector => {
+            const foundDept = departmentMap[sector].find(d => d.value === dept);
+            if (foundDept) {
+              departmentLabel = foundDept.label;
+            }
+          });
+          
+          // Set initial status to approved for all projects
+          initialData.push({
+            id: id++,
+            department: dept,
+            departmentLabel: departmentLabel,
+            project: project.label,
+            financialRequirement: project.financialRequirement,
+            status: "approved", // All projects are initially approved
+            brief: "" // No brief available initially
+          });
+        });
       }
-      
-      departmentTotals[dept].approvedOutlays += parseFloat(item.approvedOutlays) || 0;
-      departmentTotals[dept].negotiatedLoan += parseFloat(item.negotiatedLoan) || 0;
     });
     
-    return departmentTotals;
+    setProjectData(initialData);
+  }, []);
+
+  // Handle status change
+  const handleStatusChange = (id, newStatus) => {
+    setProjectData(prevData => 
+      prevData.map(item => 
+        item.id === id ? { ...item, status: newStatus } : item
+      )
+    );
   };
 
-  // Calculate grand totals
-  const calculateGrandTotals = () => {
-    const totalApprovedOutlays = budgetData.reduce((sum, item) => {
-      return sum + (parseFloat(item.approvedOutlays) || 0);
-    }, 0);
-
-    const totalNegotiatedLoan = budgetData.reduce((sum, item) => {
-      return sum + (parseFloat(item.negotiatedLoan) || 0);
-    }, 0);
-
-    return {
-      totalApprovedOutlays,
-      totalNegotiatedLoan
-    };
+  // Filter projects based on selected department and status
+  const getFilteredProjects = () => {
+    return projectData.filter(item => {
+      const departmentMatch = selectedDepartment.value === "all" || item.department === selectedDepartment.value;
+      const statusMatch = item.status === selectedStatus.value;
+      return departmentMatch && statusMatch;
+    });
   };
 
-  const departmentTotals = calculateDepartmentTotals();
-  const grandTotals = calculateGrandTotals();
+  const filteredProjects = getFilteredProjects();
+
+  // View project details
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  const viewProject = (project) => {
+    setSelectedProject(project);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedProject(null);
+  };
 
   const customSelectStyles = {
     control: (provided) => ({
@@ -1072,94 +1034,10 @@ const SessionBudgetDescriptive = () => {
     })
   };
 
-  // Prepare table rows with department totals
-  const prepareTableRows = () => {
-    if (budgetData.length === 0) {
-      return (
-        <tr>
-          <td colSpan="4" style={{ textAlign: "center", padding: "20px" }}>
-            No Projects Available
-          </td>
-        </tr>
-      );
-    }
-    
-    if (selectedDepartment.value !== "all") {
-      // For specific department view
-      return budgetData.map((item, index) => (
-        <tr key={item.id}>
-          <td className="sl-no-column">{index + 1}</td>
-          <td className="project-name-column">{item.projectName}</td>
-          <td className="approved-outlays-column">
-            <div className="currency-display">
-              <span className="currency-symbol">₹</span>
-              <span className="amount-text">{formatNumber(item.approvedOutlays)}</span>
-            </div>
-          </td>
-          <td className="negotiated-loan-amount">
-            {parseFloat(item.negotiatedLoan) > 0 ? `₹${formatNumber(item.negotiatedLoan)}` : ""}
-          </td>
-        </tr>
-      ));
-    } else {
-      // For "All" view, group by department and add department totals
-      const rows = [];
-      let currentRowIndex = 0;
-      
-      // Group projects by department
-      const departmentGroups = {};
-      Object.keys(departmentTotals).forEach(dept => {
-        departmentGroups[dept] = budgetData.filter(item => item.department === dept);
-      });
-      
-      // Create rows with department totals
-      Object.keys(departmentGroups).forEach(dept => {
-        const projects = departmentGroups[dept];
-        
-        // Add project rows
-        projects.forEach(item => {
-          rows.push(
-            <tr key={item.id}>
-              <td className="sl-no-column">{++currentRowIndex}</td>
-              <td className="project-name-column">{item.projectName}</td>
-              <td className="approved-outlays-column">
-                <div className="currency-display">
-                  <span className="currency-symbol">₹</span>
-                  <span className="amount-text">{formatNumber(item.approvedOutlays)}</span>
-                </div>
-              </td>
-              <td className="negotiated-loan-amount">
-                {parseFloat(item.negotiatedLoan) > 0 ? `₹${formatNumber(item.negotiatedLoan)}` : ""}
-              </td>
-            </tr>
-          );
-        });
-        
-        // Add department total row
-        if (projects.length > 0) {
-          rows.push(
-            <tr key={`total-${dept}`} className="sector-total-row">
-              <td className="sl-no-column"></td>
-              <td className="sector-total-label">Total - {departmentTotals[dept].departmentLabel}</td>
-              <td className="approved-outlays-column sector-total-amount">
-                ₹{formatNumber(departmentTotals[dept].approvedOutlays)}
-              </td>
-              <td className="sector-total-amount">
-                ₹{formatNumber(departmentTotals[dept].negotiatedLoan)}
-              </td>
-            </tr>
-          );
-        }
-      });
-      
-      return rows;
-    }
-  };
-
   return (
-    <div className="session-budget-descriptive-container">
+    <div className="project-approval-container">
       <header>
-        <div className="logo-text">Session Budget Descriptive</div>
+        <div className="logo-text">Project Approval</div>
       </header>
 
       <div className="data-container">
@@ -1175,54 +1053,125 @@ const SessionBudgetDescriptive = () => {
               placeholder="Select Department"
             />
           </div>
-          <div className="session-selector">
-            <span className="label-text">Session:</span>
+          <div className="status-selector">
+            <span className="label-text">Status:</span>
             <Select
-              value={selectedSession}
-              onChange={setSelectedSession}
-              options={sessionOptions}
+              value={selectedStatus}
+              onChange={setSelectedStatus}
+              options={statusOptions}
               styles={customSelectStyles}
               isSearchable={false}
-              placeholder="Select Session"
+              placeholder="Select Status"
             />
           </div>
         </div>
 
         <div className="table-container">
-          <div className="table-header">
-            <span className="rs-in-lakh">Rs. in lakh</span>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th className="sl-no-column">Sl No.</th>
-                <th>Project Name</th>
-                <th className="approved-outlays-column">Approved Allocation for {selectedSession.value}</th>
-                <th>Negotiated Loan</th>
-              </tr>
-            </thead>
-            <tbody>
-              {prepareTableRows()}
-            </tbody>
-            {budgetData.length > 0 && (
-              <tfoot>
-                <tr className="grand-total-row">
-                  <td className="sl-no-column"></td>
-                  <td className="grand-total-label">Grand Total</td>
-                  <td className="approved-outlays-column grand-total-amount">
-                    ₹{grandTotals.totalApprovedOutlays > 0 ? formatNumber(grandTotals.totalApprovedOutlays) : "0"}
-                  </td>
-                  <td className="grand-total-amount">
-                    ₹{grandTotals.totalNegotiatedLoan > 0 ? formatNumber(grandTotals.totalNegotiatedLoan) : "0"}
-                  </td>
+          {filteredProjects.length > 0 ? (
+            <table>
+              <thead>
+                <tr>
+                  <th className="sl-no-column">Sl No.</th>
+                  <th>Department</th>
+                  <th>Project</th>
+                  <th>Financial Requirement (₹)</th>
+                  <th>Status</th>
                 </tr>
-              </tfoot>
-            )}
-          </table>
+              </thead>
+              <tbody>
+                {filteredProjects.map((item, index) => (
+                  <tr key={item.id}>
+                    <td className="sl-no-column">{index + 1}</td>
+                    <td>{item.departmentLabel}</td>
+                    <td className="project-name-column">{item.project}</td>
+                    <td className="financial-requirement-column">
+                      {formatNumber(item.financialRequirement)}
+                    </td>
+                    <td className="status-column">
+                      {selectedStatus.value === "not_viewed" ? (
+                        <div className="action-buttons">
+                          <button 
+                            className="approve-button"
+                            onClick={() => handleStatusChange(item.id, "approved")}
+                          >
+                            Approve
+                          </button>
+                          <button 
+                            className="reject-button"
+                            onClick={() => handleStatusChange(item.id, "rejected")}
+                          >
+                            Reject
+                          </button>
+                          <button 
+                            className="view-button"
+                            onClick={() => viewProject(item)}
+                          >
+                            View
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="action-buttons">
+                          <span className={`status-badge ${item.status}`}>
+                            {item.status === "approved" ? "Approved" : "Rejected"}
+                          </span>
+                          <button 
+                            className="view-button"
+                            onClick={() => viewProject(item)}
+                          >
+                            View
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="no-projects-message">
+              {selectedStatus.value === "not_viewed" && "There are no Projects that have not been Viewed."}
+              {selectedStatus.value === "approved" && "There are no Projects which have been Approved."}
+              {selectedStatus.value === "rejected" && "There are no Projects which have been Rejected."}
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Project Details Modal */}
+      {showModal && selectedProject && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>Project Details</h2>
+              <button className="close-button" onClick={closeModal}>×</button>
+            </div>
+            <div className="modal-body">
+              <div className="project-detail">
+                <strong>Department:</strong> {selectedProject.departmentLabel}
+              </div>
+              <div className="project-detail">
+                <strong>Project:</strong> {selectedProject.project}
+              </div>
+              <div className="project-detail">
+                <strong>Financial Requirement:</strong> ₹{formatNumber(selectedProject.financialRequirement)}
+              </div>
+              <div className="project-detail">
+                <strong>Status:</strong> 
+                <span className={`status-badge ${selectedProject.status}`}>
+                  {selectedProject.status === "approved" ? "Approved" : 
+                   selectedProject.status === "rejected" ? "Rejected" : "Not Viewed"}
+                </span>
+              </div>
+              <div className="project-brief">
+                <strong>Brief:</strong>
+                <p>{selectedProject.brief || "No brief available for this project."}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default SessionBudgetDescriptive;
+export default ProjectApproval;

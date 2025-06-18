@@ -5,9 +5,12 @@
   --border-color: #e6e6e6;
   --text-color: #333;
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --approved-color: #28a745;
+  --rejected-color: #dc3545;
+  --not-viewed-color: #ffc107;
 }
 
-.session-budget-descriptive-container {
+.project-approval-container {
   max-width: 100%;
   width: 100%;
   margin: 0 auto;
@@ -50,7 +53,7 @@ header {
 }
 
 .department-selector,
-.session-selector {
+.status-selector {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -68,20 +71,6 @@ header {
   margin-top: 10px;
   width: 100%;
   position: relative;
-}
-
-.table-header {
-  position: relative;
-  text-align: right;
-  margin-bottom: 5px;
-  height: 20px;
-}
-
-.rs-in-lakh {
-  font-weight: bold;
-  color: #000;
-  font-size: 16px;
-  padding-right: 5px;
 }
 
 table {
@@ -125,85 +114,165 @@ td {
   white-space: nowrap;
 }
 
-.approved-outlays-column {
+.financial-requirement-column {
   min-width: 180px;
   width: auto;
+  text-align: right;
 }
 
-.currency-display {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  background: #f8f9fa;
-  border-radius: 4px;
-  padding: 8px 12px;
-}
-
-.currency-symbol {
-  color: var(--text-color);
-  margin-right: 4px;
-  font-weight: 500;
-}
-
-.amount-text {
-  color: var(--text-color);
-  font-weight: 500;
-}
-
-.negotiated-loan-amount {
-  font-weight: 500;
-  color: #000;
-}
-
-tbody tr:hover {
-  background-color: #f8f9fa;
-}
-
-.sector-total-row {
-  background-color: #eef2ff;
-  border-top: 1px solid var(--primary-color);
-  border-bottom: 1px solid var(--primary-color);
-}
-
-.sector-total-label {
-  font-size: 15px;
-  font-weight: bold;
-  color: var(--primary-color);
-}
-
-.sector-total-amount {
-  font-weight: bold;
-  color: var(--primary-color);
+.status-column {
+  min-width: 200px;
   text-align: center;
 }
 
-.grand-total-row {
-  background-color: #f0f0f0;
-  border-top: 2px solid var(--primary-color);
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.grand-total-row td {
-  font-weight: bold;
+.approve-button,
+.reject-button,
+.view-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.approve-button {
+  background-color: var(--approved-color);
+  color: white;
+}
+
+.approve-button:hover {
+  background-color: #218838;
+}
+
+.reject-button {
+  background-color: var(--rejected-color);
+  color: white;
+}
+
+.reject-button:hover {
+  background-color: #c82333;
+}
+
+.view-button {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.view-button:hover {
+  background-color: #3a5cbe;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 13px;
+  margin-right: 10px;
+  color: white;
+}
+
+.status-badge.approved {
+  background-color: var(--approved-color);
+}
+
+.status-badge.rejected {
+  background-color: var(--rejected-color);
+}
+
+.status-badge.not_viewed {
+  background-color: var(--not-viewed-color);
+  color: #212529;
+}
+
+.no-projects-message {
+  text-align: center;
+  padding: 30px;
   font-size: 16px;
-  color: #000;
+  color: #666;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 15px 20px;
+  background-color: var(--primary-color);
+  color: white;
 }
 
-.grand-total-label {
-  font-size: 18px;
-  font-weight: bold;
-  color: #000;
+.modal-header h2 {
+  margin: 0;
+  font-size: 20px;
 }
 
-.grand-total-amount {
-  font-weight: bold;
-  color: #000;
-  font-size: 16px;
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.project-detail {
+  margin-bottom: 15px;
+}
+
+.project-brief {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-color);
+}
+
+.project-brief p {
+  margin-top: 5px;
+  color: #666;
 }
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-  .session-budget-descriptive-container {
+  .project-approval-container {
     padding: 10px;
   }
 
@@ -222,7 +291,7 @@ tbody tr:hover {
   }
 
   .department-selector,
-  .session-selector {
+  .status-selector {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
@@ -245,10 +314,14 @@ tbody tr:hover {
   .data-container {
     padding: 15px;
   }
+  
+  .modal-content {
+    width: 95%;
+  }
 }
 
 @media (max-width: 480px) {
-  .session-budget-descriptive-container {
+  .project-approval-container {
     padding: 10px;
   }
 
@@ -266,5 +339,10 @@ tbody tr:hover {
 
   th, td {
     padding: 6px 8px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 5px;
   }
 }

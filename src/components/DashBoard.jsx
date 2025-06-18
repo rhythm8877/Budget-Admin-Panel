@@ -7,6 +7,7 @@ import NewProjectForm from "./New Project Form/NewProjectForm"
 import OthersForm from "./Others Form/OthersForm"
 import OthersStatement from "./Others Statement/OthersStatement"
 import PlanningForm from "./Planning Form/PlanningForm"
+import ProjectApproval from "./Project Approval/ProjectApproval"
 import SessionBudgetDescriptive from "./Session Budget Descriptive/SessionBudgetDescriptive"
 import SessionBudget from "./Session Budget/SessionBudget"
 import Sidebar from "./Sidebar"
@@ -23,6 +24,8 @@ const Dashboard = () => {
         return <PlanningForm />
       case "New Project Form":
         return <NewProjectForm />
+      case "Project Approval":
+        return <ProjectApproval />
       case "Approved Project":
         return <ApprovedProject />
       case "Session Budget":
