@@ -226,7 +226,7 @@ const OthersForm = () => {
         <form onSubmit={handleSubmit}>
           <div className="form-row">
             <div className="form-group">
-              <span className="label-text">Sector:</span>
+              <label className="label-text">Sector:</label>
               <Select
                 value={selectedSector}
                 onChange={(option) => {
@@ -242,7 +242,7 @@ const OthersForm = () => {
             </div>
             
             <div className="form-group">
-              <span className="label-text">Name of Department:</span>
+              <label className="label-text">Name of Department:</label>
               <Select
                 value={selectedDepartment}
                 onChange={(option) => {
@@ -260,7 +260,7 @@ const OthersForm = () => {
           
           <div className="form-row">
             <div className="form-group">
-              <span className="label-text">Name of Project:</span>
+              <label className="label-text">Name of Project:</label>
               <input
                 type="text"
                 className="text-input"
@@ -271,7 +271,7 @@ const OthersForm = () => {
             </div>
             
             <div className="form-group">
-              <span className="label-text">Negotiated Loan (Optional):</span>
+              <label className="label-text">Negotiated Loan (Optional):</label>
               <input
                 type="text"
                 className="text-input"
@@ -286,7 +286,7 @@ const OthersForm = () => {
           
           <div className="form-row">
             <div className="form-group">
-              <span className="label-text">Financial Requirement:</span>
+              <label className="label-text">Financial Requirement:</label>
               <div className="currency-input-container">
                 <span className="currency-symbol">₹</span>
                 <input
@@ -310,7 +310,7 @@ const OthersForm = () => {
           
           <div className="form-row">
             <div className="form-group full-width">
-              <span className="label-text">Brief:</span>
+              <label className="label-text">Brief:</label>
               <textarea
                 className="text-area-input"
                 value={brief}
