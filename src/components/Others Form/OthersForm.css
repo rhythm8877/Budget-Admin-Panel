@@ -15,7 +15,7 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-header {
+.others-form-header {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,7 +24,7 @@ header {
   white-space: nowrap;
 }
 
-.logo-text {
+.others-form-title {
   font-size: 28px;
   font-weight: bold;
   color: var(--primary-color);
@@ -32,7 +32,7 @@ header {
   white-space: nowrap;
 }
 
-.data-container {
+.others-form-data-container {
   background: white;
   border-radius: 10px;
   box-shadow: var(--shadow);
@@ -41,46 +41,48 @@ header {
   display: block;
 }
 
-form {
+.others-form {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
 }
 
-.form-row {
+.others-form-row {
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 20px;
   gap: 20px;
 }
 
-.form-group {
+.others-form-group {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 200px;
-  align-items: flex-start;
+  width: 100%;
 }
 
-.form-group.full-width {
+.others-form-group-full-width {
   flex-basis: 100%;
 }
 
-.label-text {
+.others-form-label {
   font-weight: 600;
   color: var(--primary-color);
   font-size: 16px;
   margin-bottom: 8px;
   white-space: nowrap;
   text-align: left;
-  align-self: flex-start;
+  margin-left: 0;
+  padding-left: 0;
+  display: block;
 }
 
-.select-input {
+.others-form-select {
   width: 100%;
 }
 
-.text-input {
+.others-form-text-input {
   width: 100%;
   padding: 10px;
   font-size: 14px;
@@ -90,11 +92,11 @@ form {
   background-color: #f8f9fa;
 }
 
-.text-input:focus {
+.others-form-text-input:focus {
   border-color: var(--primary-color);
 }
 
-.currency-input-container {
+.others-form-currency-container {
   display: flex;
   align-items: center;
   width: 100%;
@@ -104,14 +106,14 @@ form {
   border: 1px solid var(--border-color);
 }
 
-.currency-symbol {
+.others-form-currency-symbol {
   color: var(--text-color);
   margin-right: 4px;
   margin-left: 8px;
   font-weight: 500;
 }
 
-.number-input {
+.others-form-number-input {
   flex: 1;
   border: none;
   background: transparent;
@@ -125,24 +127,24 @@ form {
   width: 100%;
 }
 
-.number-input:focus {
+.others-form-number-input:focus {
   background-color: transparent;
 }
 
 /* Remove number input spinners */
-.number-input::-webkit-outer-spin-button,
-.number-input::-webkit-inner-spin-button {
+.others-form-number-input::-webkit-outer-spin-button,
+.others-form-number-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
   display: none;
 }
 
-.number-input[type=number] {
+.others-form-number-input[type=number] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
 
-.text-area-input {
+.others-form-textarea {
   width: 100%;
   min-height: 120px;
   max-height: 250px;
@@ -156,17 +158,17 @@ form {
   background-color: #f8f9fa;
 }
 
-.text-area-input:focus {
+.others-form-textarea:focus {
   border-color: var(--primary-color);
 }
 
-.submit-row {
+.others-form-submit-row {
   justify-content: center;
   margin-top: 30px;
   display: flex;
 }
 
-.submit-button {
+.others-form-submit-button {
   background-color: var(--primary-color);
   color: white;
   border: none;
@@ -179,7 +181,7 @@ form {
   min-width: 150px;
 }
 
-.submit-button:hover {
+.others-form-submit-button:hover {
   background-color: #3a5fb8;
 }
 
@@ -189,28 +191,28 @@ form {
     padding: 10px;
   }
 
-  header {
+  .others-form-header {
     margin-bottom: 20px;
   }
 
-  .logo-text {
+  .others-form-title {
     font-size: 24px;
   }
 
-  .form-row {
+  .others-form-row {
     flex-direction: column;
     gap: 15px;
   }
 
-  .form-group {
+  .others-form-group {
     width: 100%;
   }
 
-  .label-text {
+  .others-form-label {
     font-size: 14px;
   }
 
-  .data-container {
+  .others-form-data-container {
     padding: 15px;
   }
 }
@@ -220,15 +222,15 @@ form {
     padding: 10px;
   }
 
-  .logo-text {
+  .others-form-title {
     font-size: 20px;
   }
 
-  .label-text {
+  .others-form-label {
     font-size: 12px;
   }
 
-  .submit-button {
+  .others-form-submit-button {
     width: 100%;
     padding: 12px;
   }

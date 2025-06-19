@@ -202,6 +202,7 @@ const OthersForm = () => {
       border: '1px solid var(--border-color)',
       borderRadius: '6px',
       fontSize: '14px',
+      width: '100%',
       '&:hover': {
         borderColor: 'var(--primary-color)'
       }
@@ -213,21 +214,26 @@ const OthersForm = () => {
       '&:hover': {
         backgroundColor: state.isSelected ? 'var(--primary-color)' : 'var(--primary-light)'
       }
+    }),
+    container: (provided) => ({
+      ...provided,
+      width: '100%'
     })
   };
 
   return (
     <div className="others-form-container">
-      <header>
-        <div className="logo-text">Others Form</div>
+      <header className="others-form-header">
+        <div className="others-form-title">Others Form</div>
       </header>
 
-      <div className="data-container">
-        <form onSubmit={handleSubmit}>
-          <div className="form-row">
-            <div className="form-group">
-              <label className="label-text">Sector:</label>
+      <div className="others-form-data-container">
+        <form className="others-form" onSubmit={handleSubmit}>
+          <div className="others-form-row">
+            <div className="others-form-group">
+              <label className="others-form-label" htmlFor="sector">Sector:</label>
               <Select
+                id="sector"
                 value={selectedSector}
                 onChange={(option) => {
                   setSelectedSector(option);
@@ -237,13 +243,14 @@ const OthersForm = () => {
                 styles={customSelectStyles}
                 isSearchable
                 placeholder="Select Sector"
-                className="select-input"
+                className="others-form-select"
               />
             </div>
             
-            <div className="form-group">
-              <label className="label-text">Name of Department:</label>
+            <div className="others-form-group">
+              <label className="others-form-label" htmlFor="department">Name of Department:</label>
               <Select
+                id="department"
                 value={selectedDepartment}
                 onChange={(option) => {
                   setSelectedDepartment(option);
@@ -253,28 +260,30 @@ const OthersForm = () => {
                 isSearchable
                 placeholder="Select Department"
                 isDisabled={!selectedSector}
-                className="select-input"
+                className="others-form-select"
               />
             </div>
           </div>
           
-          <div className="form-row">
-            <div className="form-group">
-              <label className="label-text">Name of Project:</label>
+          <div className="others-form-row">
+            <div className="others-form-group">
+              <label className="others-form-label" htmlFor="projectName">Name of Project:</label>
               <input
+                id="projectName"
                 type="text"
-                className="text-input"
+                className="others-form-text-input"
                 value={projectName}
                 onChange={(e) => setProjectName(e.target.value)}
                 placeholder="Enter project name"
               />
             </div>
             
-            <div className="form-group">
-              <label className="label-text">Negotiated Loan (Optional):</label>
+            <div className="others-form-group">
+              <label className="others-form-label" htmlFor="negotiatedLoan">Negotiated Loan (Optional):</label>
               <input
+                id="negotiatedLoan"
                 type="text"
-                className="text-input"
+                className="others-form-text-input"
                 value={negotiatedLoan}
                 onChange={(e) => setNegotiatedLoan(e.target.value)}
                 pattern="[A-Za-z0-9 ]+"
@@ -284,14 +293,15 @@ const OthersForm = () => {
             </div>
           </div>
           
-          <div className="form-row">
-            <div className="form-group">
-              <label className="label-text">Financial Requirement:</label>
-              <div className="currency-input-container">
-                <span className="currency-symbol">₹</span>
+          <div className="others-form-row">
+            <div className="others-form-group">
+              <label className="others-form-label" htmlFor="financialRequirement">Financial Requirement:</label>
+              <div className="others-form-currency-container">
+                <span className="others-form-currency-symbol">₹</span>
                 <input
+                  id="financialRequirement"
                   type="text"
-                  className="number-input"
+                  className="others-form-number-input"
                   value={financialRequirement}
                   onChange={(e) => {
                     // Allow only numbers and a single decimal point
@@ -308,11 +318,12 @@ const OthersForm = () => {
             </div>
           </div>
           
-          <div className="form-row">
-            <div className="form-group full-width">
-              <label className="label-text">Brief:</label>
+          <div className="others-form-row">
+            <div className="others-form-group others-form-group-full-width">
+              <label className="others-form-label" htmlFor="brief">Brief:</label>
               <textarea
-                className="text-area-input"
+                id="brief"
+                className="others-form-textarea"
                 value={brief}
                 onChange={(e) => setBrief(e.target.value)}
                 placeholder="Enter brief description"
@@ -321,8 +332,8 @@ const OthersForm = () => {
             </div>
           </div>
           
-          <div className="form-row submit-row">
-            <button type="submit" className="submit-button">Submit</button>
+          <div className="others-form-row others-form-submit-row">
+            <button type="submit" className="others-form-submit-button">Submit</button>
           </div>
         </form>
       </div>

@@ -123,7 +123,7 @@
   color: var(--primary-color);
 }
 
-header {
+.approved-project-header {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -132,7 +132,7 @@ header {
   white-space: nowrap;
 }
 
-.logo-text {
+.approved-project-title {
   font-size: 28px;
   font-weight: bold;
   color: var(--primary-color);
@@ -140,7 +140,7 @@ header {
   white-space: nowrap;
 }
 
-.data-container {
+.approved-project-data-container {
   background: white;
   border-radius: 10px;
   box-shadow: var(--shadow);
@@ -149,43 +149,48 @@ header {
   display: block;
 }
 
-form {
+.approved-project-form {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
 }
 
-.form-row {
+.approved-project-row {
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 20px;
   gap: 20px;
 }
 
-.form-group {
+.approved-project-group {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 200px;
+  width: 100%;
 }
 
-.form-group.full-width {
+.approved-project-group-full-width {
   flex-basis: 100%;
 }
 
-.label-text {
+.approved-project-label {
   font-weight: 600;
   color: var(--primary-color);
   font-size: 16px;
   margin-bottom: 8px;
   white-space: nowrap;
+  text-align: left;
+  margin-left: 0;
+  padding-left: 0;
+  display: block;
 }
 
-.select-input {
+.approved-project-select {
   width: 100%;
 }
 
-.text-input {
+.approved-project-text-input {
   width: 100%;
   padding: 10px;
   font-size: 14px;
@@ -196,11 +201,11 @@ form {
   background-color: #f8f9fa;
 }
 
-.text-input:focus {
+.approved-project-text-input:focus {
   border-color: var(--primary-color);
 }
 
-.currency-input-container {
+.approved-project-currency-container {
   display: flex;
   align-items: center;
   width: 100%;
@@ -210,14 +215,14 @@ form {
   border: 1px solid var(--border-color);
 }
 
-.currency-symbol {
+.approved-project-currency-symbol {
   color: var(--text-color);
   margin-right: 4px;
   margin-left: 8px;
   font-weight: 500;
 }
 
-.number-input {
+.approved-project-number-input {
   flex: 1;
   border: none;
   background: transparent;
@@ -231,24 +236,24 @@ form {
   width: 100%;
 }
 
-.number-input:focus {
+.approved-project-number-input:focus {
   background-color: transparent;
 }
 
 /* Remove number input spinners */
-.number-input::-webkit-outer-spin-button,
-.number-input::-webkit-inner-spin-button {
+.approved-project-number-input::-webkit-outer-spin-button,
+.approved-project-number-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
   display: none;
 }
 
-.number-input[type=number] {
+.approved-project-number-input[type=number] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
 
-.text-area-input {
+.approved-project-textarea {
   width: 100%;
   min-height: 120px;
   max-height: 250px;
@@ -262,17 +267,17 @@ form {
   background-color: #f8f9fa;
 }
 
-.text-area-input:focus {
+.approved-project-textarea:focus {
   border-color: var(--primary-color);
 }
 
-.submit-row {
+.approved-project-submit-row {
   justify-content: center;
   margin-top: 30px;
   display: flex;
 }
 
-.submit-button {
+.approved-project-submit-button {
   background-color: var(--primary-color);
   color: white;
   border: none;
@@ -285,7 +290,7 @@ form {
   min-width: 150px;
 }
 
-.submit-button:hover {
+.approved-project-submit-button:hover {
   background-color: #3a5fb8;
 }
 
@@ -295,28 +300,28 @@ form {
     padding: 10px;
   }
 
-  header {
+  .approved-project-header {
     margin-bottom: 20px;
   }
 
-  .logo-text {
+  .approved-project-title {
     font-size: 24px;
   }
 
-  .form-row {
+  .approved-project-row {
     flex-direction: column;
     gap: 15px;
   }
 
-  .form-group {
+  .approved-project-group {
     width: 100%;
   }
 
-  .label-text {
+  .approved-project-label {
     font-size: 14px;
   }
 
-  .data-container {
+  .approved-project-data-container {
     padding: 15px;
   }
 }
@@ -326,15 +331,15 @@ form {
     padding: 10px;
   }
 
-  .logo-text {
+  .approved-project-title {
     font-size: 20px;
   }
 
-  .label-text {
+  .approved-project-label {
     font-size: 12px;
   }
 
-  .submit-button {
+  .approved-project-submit-button {
     width: 100%;
     padding: 12px;
   }

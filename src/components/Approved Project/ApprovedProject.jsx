@@ -1047,6 +1047,7 @@ const ApprovedProject = () => {
       border: '1px solid var(--border-color)',
       borderRadius: '6px',
       fontSize: '14px',
+      width: '100%',
       '&:hover': {
         borderColor: 'var(--primary-color)'
       }
@@ -1058,21 +1059,26 @@ const ApprovedProject = () => {
       '&:hover': {
         backgroundColor: state.isSelected ? 'var(--primary-color)' : 'var(--primary-light)'
       }
+    }),
+    container: (provided) => ({
+      ...provided,
+      width: '100%'
     })
   };
 
   return (
     <div className="approved-project-container">
-      <header>
-        <div className="logo-text">Approved Project Form</div>
+      <header className="approved-project-header">
+        <div className="approved-project-title">Approved Project Form</div>
       </header>
 
-      <div className="data-container">
-        <form onSubmit={handleSubmit}>
-          <div className="form-row">
-            <div className="form-group">
-              <span className="label-text">Sector:</span>
+      <div className="approved-project-data-container">
+        <form className="approved-project-form" onSubmit={handleSubmit}>
+          <div className="approved-project-row">
+            <div className="approved-project-group">
+              <label className="approved-project-label" htmlFor="sector">Sector:</label>
               <Select
+                id="sector"
                 value={selectedSector}
                 onChange={(option) => {
                   setSelectedSector(option);
@@ -1083,13 +1089,14 @@ const ApprovedProject = () => {
                 styles={customSelectStyles}
                 isSearchable
                 placeholder="Select Sector"
-                className="select-input"
+                className="approved-project-select"
               />
             </div>
             
-            <div className="form-group">
-              <span className="label-text">Name of Department:</span>
+            <div className="approved-project-group">
+              <label className="approved-project-label" htmlFor="department">Name of Department:</label>
               <Select
+                id="department"
                 value={selectedDepartment}
                 onChange={(option) => {
                   setSelectedDepartment(option);
@@ -1100,15 +1107,16 @@ const ApprovedProject = () => {
                 isSearchable
                 placeholder="Select Department"
                 isDisabled={!selectedSector}
-                className="select-input"
+                className="approved-project-select"
               />
             </div>
           </div>
           
-          <div className="form-row">
-            <div className="form-group">
-              <span className="label-text">Approved Project:</span>
+          <div className="approved-project-row">
+            <div className="approved-project-group">
+              <label className="approved-project-label" htmlFor="project">Approved Project:</label>
               <Select
+                id="project"
                 value={selectedProject}
                 onChange={setSelectedProject}
                 options={getProjectOptions()}
@@ -1116,18 +1124,19 @@ const ApprovedProject = () => {
                 isSearchable
                 placeholder={selectedDepartment && getProjectOptions().length === 0 ? "No approved projects" : "Select Project"}
                 isDisabled={!selectedDepartment || (selectedDepartment && getProjectOptions().length === 0)}
-                className="select-input"
+                className="approved-project-select"
               />
             </div>
             
-            <div className="form-group">
-              <span className="label-text">Date (DD/MM/YY):</span>
+            <div className="approved-project-group">
+              <label className="approved-project-label" htmlFor="date">Date (DD/MM/YY):</label>
               <DatePicker
+                id="date"
                 selected={selectedDate}
                 onChange={handleDateChange}
                 dateFormat="dd/MM/yy"
                 placeholderText="DD/MM/YY"
-                className="text-input"
+                className="approved-project-text-input"
                 customInput={
                   <input
                     type="text"
@@ -1181,14 +1190,15 @@ const ApprovedProject = () => {
             </div>
           </div>
           
-          <div className="form-row">
-            <div className="form-group">
-              <span className="label-text">Amount:</span>
-              <div className="currency-input-container">
-                <span className="currency-symbol">₹</span>
+          <div className="approved-project-row">
+            <div className="approved-project-group">
+              <label className="approved-project-label" htmlFor="amount">Amount:</label>
+              <div className="approved-project-currency-container">
+                <span className="approved-project-currency-symbol">₹</span>
                 <input
+                  id="amount"
                   type="text"
-                  className="number-input"
+                  className="approved-project-number-input"
                   value={amount}
                   onChange={(e) => {
                     // Allow only numbers and a single decimal point
@@ -1205,8 +1215,8 @@ const ApprovedProject = () => {
             </div>
           </div>
           
-          <div className="form-row submit-row">
-            <button type="submit" className="submit-button">Submit</button>
+          <div className="approved-project-row approved-project-submit-row">
+            <button type="submit" className="approved-project-submit-button">Submit</button>
           </div>
         </form>
       </div>
