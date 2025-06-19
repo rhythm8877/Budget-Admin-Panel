@@ -1,13 +1,100 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select from "react-select";
 import "./StatePlan.css";
 
 const StatePlan = () => {
   const [selectedSector, setSelectedSector] = useState({ value: "all", label: "All" });
-  const [selectedMonth, setSelectedMonth] = useState({ value: "january", label: "January" });
-  const [selectedSession, setSelectedSession] = useState({ value: "2025-26", label: "2025-26" });
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [stateShareAmount, setStateShareAmount] = useState(500000); // Default amount for demonstration
+  
+  // Generate session options dynamically based on current date
+  const generateSessionOptions = () => {
+    const options = [];
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth(); // 0-11 (0 is January)
+    const currentYear = currentDate.getFullYear();
+    
+    // Calculate the current financial year
+    // If current month is January to March (0-2), we're in the previous year's financial year
+    // Otherwise, we're in the current year's financial year
+    const currentFinancialYearStart = currentMonth < 3 ? currentYear - 1 : currentYear;
+    
+    // Generate options from 2015-16 up to current financial year + 1
+    for (let year = 2015; year <= currentFinancialYearStart + 1; year++) {
+      const session = `${year}-${(year + 1).toString().slice(-2)}`;
+      options.push({ value: session, label: session });
+    }
+    
+    return options;
+  };
+  
+  // Get current financial year
+  const getCurrentFinancialYear = () => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth(); // 0-11
+    const currentYear = currentDate.getFullYear();
+    const financialYearStart = currentMonth < 3 ? currentYear - 1 : currentYear;
+    return `${financialYearStart}-${(financialYearStart + 1).toString().slice(-2)}`;
+  };
+  
+  // Get current financial year's first day (April 1st)
+  const getCurrentFinancialYearFirstDay = () => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth(); // 0-11
+    const currentYear = currentDate.getFullYear();
+    const financialYearStart = currentMonth < 3 ? currentYear - 1 : currentYear;
+    return `01/04/${financialYearStart.toString().slice(-2)}`;
+  };
+  
+  const [selectedSession, setSelectedSession] = useState(() => {
+    const currentFY = getCurrentFinancialYear();
+    return { value: currentFY, label: currentFY };
+  });
+
+  // Format date for input field (YYYY-MM-DD)
+  const formatDateForInput = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  
+  // Format date for display (DD/MM/YY)
+  const formatDateForDisplay = (dateString) => {
+    if (!dateString) return "";
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year.slice(-2)}`;
+  };
+
+  // Set default dates (current month) using useEffect to avoid render issues
+  useEffect(() => {
+    const today = new Date();
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    
+    setFromDate(formatDateForInput(firstDay));
+    setToDate(formatDateForInput(lastDay));
+    
+    // Try to fetch state share amount from BudgetryInitiative
+    // In a real app, this would use context, Redux, or an API call
+    // For now, we'll use a mock value
+    try {
+      // This would be replaced with actual data fetching logic
+      const budgetryInitiativeData = localStorage.getItem('budgetryInitiativeData');
+      if (budgetryInitiativeData) {
+        const parsedData = JSON.parse(budgetryInitiativeData);
+        const stateShareItem = parsedData.find(item => item.name === "State share to CSS/NEC/NLCPR");
+        if (stateShareItem && stateShareItem.approvedOutlays) {
+          setStateShareAmount(parseFloat(stateShareItem.approvedOutlays) * 100000); // Convert from lakh to actual amount
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching state share amount:", error);
+    }
+  }, []);
 
   const sectorOptions = [
     { value: "all", label: "All" },
@@ -23,48 +110,6 @@ const StatePlan = () => {
     { value: "social", label: "Social Services" },
     { value: "general", label: "General Services" }
   ];
-
-  const monthOptions = [
-    { value: "january", label: "January" },
-    { value: "february", label: "February" },
-    { value: "march", label: "March" },
-    { value: "april", label: "April" },
-    { value: "may", label: "May" },
-    { value: "june", label: "June" },
-    { value: "july", label: "July" },
-    { value: "august", label: "August" },
-    { value: "september", label: "September" },
-    { value: "october", label: "October" },
-    { value: "november", label: "November" },
-    { value: "december", label: "December" }
-  ];
-
-  // Generate session options from 2015-16 to current year+1 (2025-26)
-  const generateSessionOptions = () => {
-    const options = [];
-    for (let year = 2015; year <= 2025; year++) {
-      const session = `${year}-${(year + 1).toString().slice(-2)}`;
-      options.push({ value: session, label: session });
-    }
-    return options;
-  };
-
-  const sessionOptions = generateSessionOptions();
-
-  // Sector names mapping for display in totals
-  // const sectorNames = {
-  //   "agri": "Agri & Allied",
-  //   "rural": "Rural Development",
-  //   "special": "Special Area Programme",
-  //   "irrigation": "Irrigation",
-  //   "energy": "Energy",
-  //   "industries": "Industries & Minerals",
-  //   "transport": "Transport",
-  //   "sctech": "Sc & Tech",
-  //   "geneco": "General Eco. Services",
-  //   "social": "Social Services",
-  //   "general": "General Services"
-  // };
 
   // Department mapping from OthersForm.jsx
   const departmentMap = {
@@ -170,24 +215,52 @@ const StatePlan = () => {
 
   // Generate complete state plan data using departmentMap
   const generateStatePlanData = () => {
-    let id = 1;
+    let id = 2; // Start from 2 since ID 1 is reserved for State share
+    let remainingAmount = stateShareAmount; // Track remaining amount
     const data = [];
+    
+    // First add the State share to CSS/NEC/NLCPR as a special row
+    data.push({
+      id: 1,
+      mainDept: "special",
+      departmentName: "State share to CSS/NEC/NLCPR",
+      date: getCurrentFinancialYearFirstDay(),
+      debit: "-", // Set debit to "-" for the first row
+      credit: stateShareAmount.toString(), // Set credit to the amount for the first row
+      amountLeft: stateShareAmount.toString(),
+      isSpecialRow: true
+    });
     
     Object.keys(departmentMap).forEach(sector => {
       departmentMap[sector].forEach(dept => {
         // Generate random values for demonstration
         const debit = Math.floor(Math.random() * 300000) + 50000;
-        const credit = Math.floor(Math.random() * debit);
-        const amountLeft = debit - credit;
-        const day = Math.floor(Math.random() * 28) + 1;
+        const credit = "-"; // Set credit to "-" as requested
+        remainingAmount -= debit; // Deduct from remaining amount
+        const amountLeft = remainingAmount > 0 ? remainingAmount : 0; // Ensure we don't go negative
+        
+        // Generate random date between fromDate and toDate or use default date range
+        let randomDate;
+        try {
+          const fromDateObj = fromDate ? new Date(fromDate) : new Date(2025, 0, 1);
+          const toDateObj = toDate ? new Date(toDate) : new Date(2025, 0, 31);
+          randomDate = new Date(fromDateObj.getTime() + Math.random() * (toDateObj.getTime() - fromDateObj.getTime()));
+        } catch (error) {
+          // Fallback to current date if there's an error
+          randomDate = new Date();
+        }
+        
+        const day = randomDate.getDate().toString().padStart(2, '0');
+        const month = (randomDate.getMonth() + 1).toString().padStart(2, '0');
+        const year = randomDate.getFullYear().toString().slice(-2);
         
         data.push({
           id: id++,
           mainDept: sector,
           departmentName: dept.label,
-          date: `${day.toString().padStart(2, '0')}/01/25`,
+          date: `${day}/${month}/${year}`,
           debit: debit.toString(),
-          credit: credit.toString(),
+          credit: credit,
           amountLeft: amountLeft.toString()
         });
       });
@@ -198,63 +271,82 @@ const StatePlan = () => {
 
   const statePlanData = generateStatePlanData();
 
-  // Filter data based on selected sector
+  // Filter data based on selected sector and date range
   const getFilteredData = () => {
-    if (selectedSector.value === "all") {
-      return statePlanData;
+    let filtered = statePlanData;
+    
+    // Always include the special row (State share to CSS/NEC/NLCPR)
+    const specialRow = filtered.find(item => item.isSpecialRow);
+    
+    // Filter by sector if not "all"
+    if (selectedSector.value !== "all") {
+      filtered = filtered.filter(item => item.mainDept === selectedSector.value || item.isSpecialRow);
     }
-    return statePlanData.filter(item => item.mainDept === selectedSector.value);
+    
+    // Filter by date range if dates are provided
+    if (fromDate || toDate) {
+      filtered = filtered.filter(item => {
+        // Always include the special row
+        if (item.isSpecialRow) return true;
+        
+        try {
+          const [day, month, year] = item.date.split('/');
+          const itemDate = new Date(`20${year}`, parseInt(month) - 1, parseInt(day));
+          
+          let isInRange = true;
+          if (fromDate) {
+            const fromDateObj = new Date(fromDate);
+            isInRange = isInRange && itemDate >= fromDateObj;
+          }
+          if (toDate) {
+            const toDateObj = new Date(toDate);
+            isInRange = isInRange && itemDate <= toDateObj;
+          }
+          
+          return isInRange;
+        } catch (error) {
+          // If there's an error parsing the date, include the item by default
+          return true;
+        }
+      });
+      
+      // If the special row was filtered out, add it back
+      if (!filtered.find(item => item.isSpecialRow) && specialRow) {
+        filtered = [specialRow, ...filtered];
+      }
+    }
+    
+    return filtered;
   };
 
   const filteredStatePlanData = getFilteredData();
 
   // Format number for display
   const formatNumber = (num) => {
-    if (!num) return "";
+    if (!num || num === "-") return num;
     return parseFloat(num).toLocaleString();
   };
-
-  // Calculate sector totals
-  // const calculateSectorTotals = () => {
-  //   const sectorTotals = {};
-    
-  //   // Initialize sector totals
-  //   Object.keys(sectorNames).forEach(sector => {
-  //     sectorTotals[sector] = {
-  //       debit: 0,
-  //       credit: 0,
-  //       amountLeft: 0
-  //     };
-  //   });
-    
-  //   // Calculate totals for each sector
-  //   filteredStatePlanData.forEach(item => {
-  //     const sector = item.mainDept;
-  //     const debit = parseFloat(item.debit) || 0;
-  //     const credit = parseFloat(item.credit) || 0;
-  //     const amountLeft = parseFloat(item.amountLeft) || 0;
-      
-  //     sectorTotals[sector].debit += debit;
-  //     sectorTotals[sector].credit += credit;
-  //     sectorTotals[sector].amountLeft += amountLeft;
-  //   });
-    
-  //   return sectorTotals;
-  // };
 
   // Calculate grand totals
   const calculateGrandTotals = () => {
     const totalDebit = filteredStatePlanData.reduce((sum, item) => {
-      return sum + (parseFloat(item.debit) || 0);
+      // Skip the special row's debit since it's "-"
+      if (item.isSpecialRow) return sum;
+      return sum + (item.debit !== "-" ? parseFloat(item.debit) || 0 : 0);
     }, 0);
 
     const totalCredit = filteredStatePlanData.reduce((sum, item) => {
-      return sum + (parseFloat(item.credit) || 0);
+      // Include the special row's credit amount
+      if (item.isSpecialRow) {
+        return sum + (parseFloat(item.credit) || 0);
+      }
+      return sum + (item.credit !== "-" ? parseFloat(item.credit) || 0 : 0);
     }, 0);
 
-    const totalAmountLeft = filteredStatePlanData.reduce((sum, item) => {
-      return sum + (parseFloat(item.amountLeft) || 0);
-    }, 0);
+    // Amount left is the last row's amount left
+    const totalAmountLeft = filteredStatePlanData.length > 0 
+      ? parseFloat(filteredStatePlanData[filteredStatePlanData.length - 1].amountLeft) || 0
+      : 0;
 
     return {
       totalDebit,
@@ -263,7 +355,6 @@ const StatePlan = () => {
     };
   };
 
-  // const sectorTotals = calculateSectorTotals();
   const grandTotals = calculateGrandTotals();
 
   const customSelectStyles = {
@@ -291,7 +382,46 @@ const StatePlan = () => {
   const prepareTableRows = () => {
     let currentRowIndex = 0;
     
+    if (filteredStatePlanData.length === 0) {
+      return (
+        <tr>
+          <td colSpan="6" style={{ textAlign: "center", padding: "20px" }}>
+            No Data Available
+          </td>
+        </tr>
+      );
+    }
+    
     return filteredStatePlanData.map((item) => {
+      // Special handling for the State share row
+      if (item.isSpecialRow) {
+        return (
+          <tr key={item.id} className="state-share-row">
+            <td className="sl-no-column"></td>
+            <td className="department-name-column state-share-name">{item.departmentName}</td>
+            <td className="date-column">{item.date}</td>
+            <td className="debit-column">
+              <div className="currency-display">
+                <span className="amount-text">{item.debit}</span>
+              </div>
+            </td>
+            <td className="credit-column">
+              <div className="currency-display">
+                <span className="currency-symbol">₹</span>
+                <span className="amount-text">{formatNumber(item.credit)}</span>
+              </div>
+            </td>
+            <td className="amount-left-column">
+              <div className="currency-display">
+                <span className="currency-symbol">₹</span>
+                <span className="amount-text">{formatNumber(item.amountLeft)}</span>
+              </div>
+            </td>
+          </tr>
+        );
+      }
+      
+      // Regular rows with serial numbers
       return (
         <tr key={item.id}>
           <td className="sl-no-column">{++currentRowIndex}</td>
@@ -305,8 +435,7 @@ const StatePlan = () => {
           </td>
           <td className="credit-column">
             <div className="currency-display">
-              <span className="currency-symbol">₹</span>
-              <span className="amount-text">{formatNumber(item.credit)}</span>
+              <span className="amount-text">{item.credit}</span>
             </div>
           </td>
           <td className="amount-left-column">
@@ -327,40 +456,56 @@ const StatePlan = () => {
       </header>
 
       <div className="data-container">
-        <div className="control-panel-filters">
-          <div className="sector-selector">
-            <span className="label-text">Sector:</span>
-            <Select
-              value={selectedSector}
-              onChange={setSelectedSector}
-              options={sectorOptions}
-              styles={customSelectStyles}
-              isSearchable
-              placeholder="Select Sector"
-            />
+        <div className="filter-wrapper">
+          <div className="filter-row">
+            <div className="filter-item">
+              <span className="label-text">Sector:</span>
+              <Select
+                value={selectedSector}
+                onChange={setSelectedSector}
+                options={sectorOptions}
+                styles={customSelectStyles}
+                isSearchable
+                placeholder="Select Sector"
+              />
+            </div>
+            <div className="filter-item">
+              <span className="label-text">From:</span>
+              <input
+                type="date"
+                className="date-input"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+              />
+            </div>
+            <div className="filter-item">
+              <span className="label-text">To:</span>
+              <input
+                type="date"
+                className="date-input"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+              />
+            </div>
           </div>
-          <div className="month-selector">
-            <span className="label-text">Month:</span>
-            <Select
-              value={selectedMonth}
-              onChange={setSelectedMonth}
-              options={monthOptions}
-              styles={customSelectStyles}
-              isSearchable = {false}
-              placeholder="Select Month"
-            />
+          
+          <div className="filter-row">
+            <div className="filter-item">
+              <span className="label-text">Financial Year:</span>
+              <Select
+                value={selectedSession}
+                onChange={setSelectedSession}
+                options={generateSessionOptions()}
+                styles={customSelectStyles}
+                isSearchable={false}
+                placeholder="Select Session"
+              />
+            </div>
           </div>
-          <div className="session-selector">
-            <span className="label-text">Session:</span>
-            <Select
-              value={selectedSession}
-              onChange={setSelectedSession}
-              options={sessionOptions}
-              styles={customSelectStyles}
-              isSearchable={false}
-              placeholder="Select Session"
-            />
-          </div>
+        </div>
+        
+        <div className="rs-in-lakh-wrapper">
+          <span className="rs-in-lakh">Rs. in lakh</span>
         </div>
 
         <div className="table-container">
@@ -387,7 +532,7 @@ const StatePlan = () => {
                   ₹{grandTotals.totalDebit > 0 ? formatNumber(grandTotals.totalDebit) : "0"}
                 </td>
                 <td className="credit-column grand-total-amount">
-                  ₹{grandTotals.totalCredit > 0 ? formatNumber(grandTotals.totalCredit) : "0"}
+                  {grandTotals.totalCredit > 0 ? `₹${formatNumber(grandTotals.totalCredit)}` : "-"}
                 </td>
                 <td className="amount-left-column grand-total-amount">
                   ₹{grandTotals.totalAmountLeft > 0 ? formatNumber(grandTotals.totalAmountLeft) : "0"}

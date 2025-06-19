@@ -9,6 +9,7 @@ const OthersForm = () => {
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [projectName, setProjectName] = useState("");
   const [financialRequirement, setFinancialRequirement] = useState("");
+  const [negotiatedLoan, setNegotiatedLoan] = useState("");
   const [brief, setBrief] = useState("");
 
   const sectorOptions = [
@@ -135,13 +136,18 @@ const OthersForm = () => {
 
   // Handle number input to prevent non-numeric characters
   const handleNumberKeyDown = (e) => {
-    // Allow only numbers, backspace, delete, tab, arrows, home, end
+    // Allow only numbers, backspace, delete, tab, arrows, home, end, and decimal point
     const allowedKeys = [
       'Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 
-      'Home', 'End', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+      'Home', 'End', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'
     ];
     
     if (!allowedKeys.includes(e.key)) {
+      e.preventDefault();
+    }
+    
+    // Prevent multiple decimal points
+    if (e.key === '.' && e.target.value.includes('.')) {
       e.preventDefault();
     }
   };
@@ -157,8 +163,15 @@ const OthersForm = () => {
     
     // Validate form
     if (!selectedSector || !selectedDepartment || !projectName || !financialRequirement || !brief) {
-      alert("Please fill in all fields");
+      alert("Please fill in all required fields");
       return;
+    }
+
+    // Format financial requirement to add "00" if it ends with a decimal point
+    let formattedFinancialRequirement = financialRequirement;
+    if (financialRequirement.endsWith('.')) {
+      formattedFinancialRequirement = financialRequirement + "00";
+      setFinancialRequirement(formattedFinancialRequirement);
     }
     
     // Form submission logic would go here
@@ -166,7 +179,8 @@ const OthersForm = () => {
       sector: selectedSector,
       department: selectedDepartment,
       projectName,
-      financialRequirement,
+      financialRequirement: formattedFinancialRequirement,
+      negotiatedLoan,
       brief
     });
     
@@ -175,6 +189,7 @@ const OthersForm = () => {
     setSelectedDepartment(null);
     setProjectName("");
     setFinancialRequirement("");
+    setNegotiatedLoan("");
     setBrief("");
     
     alert("Form submitted successfully!");
@@ -256,18 +271,38 @@ const OthersForm = () => {
             </div>
             
             <div className="form-group">
+              <span className="label-text">Negotiated Loan (Optional):</span>
+              <input
+                type="text"
+                className="text-input"
+                value={negotiatedLoan}
+                onChange={(e) => setNegotiatedLoan(e.target.value)}
+                pattern="[A-Za-z0-9 ]+"
+                title="Only letters, numbers and spaces allowed"
+                placeholder="Enter negotiated loan"
+              />
+            </div>
+          </div>
+          
+          <div className="form-row">
+            <div className="form-group">
               <span className="label-text">Financial Requirement:</span>
               <div className="currency-input-container">
                 <span className="currency-symbol">₹</span>
                 <input
-                  type="number"
+                  type="text"
                   className="number-input"
                   value={financialRequirement}
-                  onChange={(e) => setFinancialRequirement(e.target.value)}
+                  onChange={(e) => {
+                    // Allow only numbers and a single decimal point
+                    const value = e.target.value;
+                    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                      setFinancialRequirement(value);
+                    }
+                  }}
                   onKeyDown={handleNumberKeyDown}
                   onWheel={handleNumberWheel}
-                  min="0"
-                  placeholder="Enter amount"
+                  placeholder="Enter amount (counted in lakh)"
                 />
               </div>
             </div>

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import "../styles/Dashboard.css"
 import ApprovedProject from "./Approved Project/ApprovedProject"
-import NewProjectForm from "./New Project Form/NewProjectForm"
+import BudgetryInitiative from "./Budgetry Initiative/BudgetryInitiative"
 import OthersForm from "./Others Form/OthersForm"
 import OthersStatement from "./Others Statement/OthersStatement"
 import PlanningForm from "./Planning Form/PlanningForm"
@@ -14,16 +14,16 @@ import Sidebar from "./Sidebar"
 import StatePlan from "./State Plan/StatePlan"
 
 const Dashboard = () => {
-  const [activeSection, setActiveSection] = useState("Others Form")
+  const [activeSection, setActiveSection] = useState("Budgetry Initiative")
 
   const renderSection = () => {
     switch (activeSection) {
+      case "Budgetry Initiative":
+        return <BudgetryInitiative />
       case "Others Form":
         return <OthersForm />
       case "Planning Form":
         return <PlanningForm />
-      case "New Project Form":
-        return <NewProjectForm />
       case "Project Approval":
         return <ProjectApproval />
       case "Approved Project":
@@ -37,7 +37,7 @@ const Dashboard = () => {
       case "Others Statement":
         return <OthersStatement />
       default:
-        return <OthersForm />
+        return <BudgetryInitiative />
     }
   }
 

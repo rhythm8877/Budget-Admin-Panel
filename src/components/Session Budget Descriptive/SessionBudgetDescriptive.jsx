@@ -6,7 +6,41 @@ import "./SessionBudgetDescriptive.css";
 
 const SessionBudgetDescriptive = () => {
   const [selectedDepartment, setSelectedDepartment] = useState({ value: "all", label: "All" });
-  const [selectedSession, setSelectedSession] = useState({ value: "2025-26", label: "2025-26" });
+  
+  // Generate session options dynamically based on current date
+  const generateSessionOptions = () => {
+    const options = [];
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth(); // 0-11 (0 is January)
+    const currentYear = currentDate.getFullYear();
+    
+    // Calculate the current financial year
+    // If current month is January to March (0-2), we're in the previous year's financial year
+    // Otherwise, we're in the current year's financial year
+    const currentFinancialYearStart = currentMonth < 3 ? currentYear - 1 : currentYear;
+    
+    // Generate options from 2015-16 up to current financial year + 1
+    for (let year = 2015; year <= currentFinancialYearStart + 1; year++) {
+      const session = `${year}-${(year + 1).toString().slice(-2)}`;
+      options.push({ value: session, label: session });
+    }
+    
+    return options;
+  };
+  
+  // Get current financial year
+  const getCurrentFinancialYear = () => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth(); // 0-11
+    const currentYear = currentDate.getFullYear();
+    const financialYearStart = currentMonth < 3 ? currentYear - 1 : currentYear;
+    return `${financialYearStart}-${(financialYearStart + 1).toString().slice(-2)}`;
+  };
+  
+  const [selectedSession, setSelectedSession] = useState(() => {
+    const currentFY = getCurrentFinancialYear();
+    return { value: currentFY, label: currentFY };
+  });
 
   // Department mapping from PlanningForm.jsx
   const departmentMap = {
@@ -929,18 +963,7 @@ const SessionBudgetDescriptive = () => {
     return allDepartments;
   };
 
-  // Generate session options from 2015-16 to current year+1 (2025-26)
-  const generateSessionOptions = () => {
-    const options = [];
-    for (let year = 2015; year <= 2025; year++) {
-      const session = `${year}-${(year + 1).toString().slice(-2)}`;
-      options.push({ value: session, label: session });
-    }
-    return options;
-  };
-
   const departmentOptions = createDepartmentOptions();
-  const sessionOptions = generateSessionOptions();
 
   // Generate budget data for projects based on selected department
   const generateBudgetData = () => {
@@ -954,7 +977,16 @@ const SessionBudgetDescriptive = () => {
           projectMap[dept].forEach(project => {
             // Generate random values for demonstration
             const approvedOutlays = Math.floor(Math.random() * 300000) + 50000;
-            const negotiatedLoan = Math.floor(Math.random() * approvedOutlays * 0.7);
+            
+            // For some projects, set negotiated loan as "NABARD" instead of a number
+            let negotiatedLoan;
+            if (Math.random() > 0.8) {
+              negotiatedLoan = "NABARD";
+            } else if (Math.random() > 0.5) {
+              negotiatedLoan = Math.floor(Math.random() * approvedOutlays * 0.7).toString();
+            } else {
+              negotiatedLoan = "";
+            }
             
             // Find the department label
             let departmentLabel = "";
@@ -971,7 +1003,7 @@ const SessionBudgetDescriptive = () => {
               departmentLabel: departmentLabel,
               projectName: project.label,
               approvedOutlays: approvedOutlays.toString(),
-              negotiatedLoan: negotiatedLoan.toString()
+              negotiatedLoan: negotiatedLoan
             });
           });
         }
@@ -984,7 +1016,16 @@ const SessionBudgetDescriptive = () => {
         deptProjects.forEach(project => {
           // Generate random values for demonstration
           const approvedOutlays = Math.floor(Math.random() * 300000) + 50000;
-          const negotiatedLoan = Math.floor(Math.random() * approvedOutlays * 0.7);
+          
+          // For some projects, set negotiated loan as "NABARD" instead of a number
+          let negotiatedLoan;
+          if (Math.random() > 0.8) {
+            negotiatedLoan = "NABARD";
+          } else if (Math.random() > 0.5) {
+            negotiatedLoan = Math.floor(Math.random() * approvedOutlays * 0.7).toString();
+          } else {
+            negotiatedLoan = "";
+          }
           
           data.push({
             id: id++,
@@ -992,7 +1033,7 @@ const SessionBudgetDescriptive = () => {
             departmentLabel: selectedDepartment.label,
             projectName: project.label,
             approvedOutlays: approvedOutlays.toString(),
-            negotiatedLoan: negotiatedLoan.toString()
+            negotiatedLoan: negotiatedLoan
           });
         });
       }
@@ -1021,35 +1062,24 @@ const SessionBudgetDescriptive = () => {
         departmentTotals[dept] = {
           departmentLabel: item.departmentLabel,
           approvedOutlays: 0,
-          negotiatedLoan: 0
+          negotiatedLoan: 0,
+          hasNabard: false
         };
       }
       
       departmentTotals[dept].approvedOutlays += parseFloat(item.approvedOutlays) || 0;
-      departmentTotals[dept].negotiatedLoan += parseFloat(item.negotiatedLoan) || 0;
+      
+      if (item.negotiatedLoan === "NABARD") {
+        departmentTotals[dept].hasNabard = true;
+      } else if (item.negotiatedLoan) {
+        departmentTotals[dept].negotiatedLoan += parseFloat(item.negotiatedLoan) || 0;
+      }
     });
     
     return departmentTotals;
   };
 
-  // Calculate grand totals
-  const calculateGrandTotals = () => {
-    const totalApprovedOutlays = budgetData.reduce((sum, item) => {
-      return sum + (parseFloat(item.approvedOutlays) || 0);
-    }, 0);
-
-    const totalNegotiatedLoan = budgetData.reduce((sum, item) => {
-      return sum + (parseFloat(item.negotiatedLoan) || 0);
-    }, 0);
-
-    return {
-      totalApprovedOutlays,
-      totalNegotiatedLoan
-    };
-  };
-
   const departmentTotals = calculateDepartmentTotals();
-  const grandTotals = calculateGrandTotals();
 
   const customSelectStyles = {
     control: (provided) => ({
@@ -1072,7 +1102,7 @@ const SessionBudgetDescriptive = () => {
     })
   };
 
-  // Prepare table rows with department totals
+  // Prepare table rows with department headers and totals
   const prepareTableRows = () => {
     if (budgetData.length === 0) {
       return (
@@ -1085,26 +1115,70 @@ const SessionBudgetDescriptive = () => {
     }
     
     if (selectedDepartment.value !== "all") {
-      // For specific department view
-      return budgetData.map((item, index) => (
-        <tr key={item.id}>
-          <td className="sl-no-column">{index + 1}</td>
-          <td className="project-name-column">{item.projectName}</td>
-          <td className="approved-outlays-column">
-            <div className="currency-display">
-              <span className="currency-symbol">₹</span>
-              <span className="amount-text">{formatNumber(item.approvedOutlays)}</span>
-            </div>
-          </td>
-          <td className="negotiated-loan-amount">
-            {parseFloat(item.negotiatedLoan) > 0 ? `₹${formatNumber(item.negotiatedLoan)}` : ""}
-          </td>
-        </tr>
-      ));
-    } else {
-      // For "All" view, group by department and add department totals
+      // For specific department view, also show department header
       const rows = [];
-      let currentRowIndex = 0;
+      
+      // Add department header row without serial number
+      rows.push(
+        <tr key="department-header" className="department-header-row">
+          <td className="sl-no-column"></td>
+          <td className="department-header" colSpan="3">{selectedDepartment.label.toUpperCase()}</td>
+        </tr>
+      );
+      
+      // Add project rows with serial numbers
+      budgetData.forEach((item, index) => {
+        rows.push(
+          <tr key={item.id}>
+            <td className="sl-no-column">{index + 1}</td>
+            <td className="project-name-column">{item.projectName}</td>
+            <td className="approved-outlays-column">
+              {parseFloat(item.approvedOutlays) > 0 ? (
+                <div className="currency-display">
+                  <span className="currency-symbol">₹</span>
+                  <span className="amount-text">{formatNumber(item.approvedOutlays)}</span>
+                </div>
+              ) : ""}
+            </td>
+            <td className="negotiated-loan-amount">
+              {item.negotiatedLoan === "NABARD" ? "NABARD" : 
+               (item.negotiatedLoan && parseFloat(item.negotiatedLoan) > 0 ? `₹${formatNumber(item.negotiatedLoan)}` : "")}
+            </td>
+          </tr>
+        );
+      });
+      
+      // Add department total row (black, not blue)
+      if (budgetData.length > 0) {
+        const deptTotal = {
+          approvedOutlays: budgetData.reduce((sum, item) => sum + (parseFloat(item.approvedOutlays) || 0), 0),
+          negotiatedLoan: budgetData.reduce((sum, item) => {
+            if (item.negotiatedLoan === "NABARD") return sum;
+            return sum + (parseFloat(item.negotiatedLoan) || 0);
+          }, 0),
+          hasNabard: budgetData.some(item => item.negotiatedLoan === "NABARD")
+        };
+        
+        rows.push(
+          <tr key="total-row" className="grand-total-row">
+            <td className="sl-no-column"></td>
+            <td className="grand-total-label">Total</td>
+            <td className="approved-outlays-column grand-total-amount">
+              ₹{formatNumber(deptTotal.approvedOutlays)}
+            </td>
+            <td className="negotiated-loan-amount grand-total-amount">
+              {deptTotal.hasNabard ? "" : 
+               (deptTotal.negotiatedLoan > 0 ? `₹${formatNumber(deptTotal.negotiatedLoan)}` : "")}
+            </td>
+          </tr>
+        );
+      }
+      
+      return rows;
+    } else {
+      // For "All" view, group by department with headers and totals
+      const rows = [];
+      let slNo = 1;
       
       // Group projects by department
       const departmentGroups = {};
@@ -1112,40 +1186,52 @@ const SessionBudgetDescriptive = () => {
         departmentGroups[dept] = budgetData.filter(item => item.department === dept);
       });
       
-      // Create rows with department totals
+      // Create rows with department headers and totals
       Object.keys(departmentGroups).forEach(dept => {
         const projects = departmentGroups[dept];
         
-        // Add project rows
-        projects.forEach(item => {
+        if (projects.length > 0) {
+          // Add department header row with serial number
           rows.push(
-            <tr key={item.id}>
-              <td className="sl-no-column">{++currentRowIndex}</td>
-              <td className="project-name-column">{item.projectName}</td>
-              <td className="approved-outlays-column">
-                <div className="currency-display">
-                  <span className="currency-symbol">₹</span>
-                  <span className="amount-text">{formatNumber(item.approvedOutlays)}</span>
-                </div>
-              </td>
-              <td className="negotiated-loan-amount">
-                {parseFloat(item.negotiatedLoan) > 0 ? `₹${formatNumber(item.negotiatedLoan)}` : ""}
-              </td>
+            <tr key={`header-${dept}`} className="department-header-row">
+              <td className="sl-no-column">{slNo++}</td>
+              <td className="department-header" colSpan="3">{departmentTotals[dept].departmentLabel.toUpperCase()}</td>
             </tr>
           );
-        });
-        
-        // Add department total row
-        if (projects.length > 0) {
+          
+          // Add project rows without serial numbers
+          projects.forEach((item) => {
+            rows.push(
+              <tr key={item.id}>
+                <td className="sl-no-column"></td>
+                <td className="project-name-column">{item.projectName}</td>
+                <td className="approved-outlays-column">
+                  {parseFloat(item.approvedOutlays) > 0 ? (
+                    <div className="currency-display">
+                      <span className="currency-symbol">₹</span>
+                      <span className="amount-text">{formatNumber(item.approvedOutlays)}</span>
+                    </div>
+                  ) : ""}
+                </td>
+                <td className="negotiated-loan-amount">
+                  {item.negotiatedLoan === "NABARD" ? "NABARD" : 
+                   (item.negotiatedLoan && parseFloat(item.negotiatedLoan) > 0 ? `₹${formatNumber(item.negotiatedLoan)}` : "")}
+                </td>
+              </tr>
+            );
+          });
+          
+          // Add department total row (black, not blue)
           rows.push(
-            <tr key={`total-${dept}`} className="sector-total-row">
+            <tr key={`total-${dept}`} className="grand-total-row">
               <td className="sl-no-column"></td>
-              <td className="sector-total-label">Total - {departmentTotals[dept].departmentLabel}</td>
-              <td className="approved-outlays-column sector-total-amount">
+              <td className="grand-total-label">Total</td>
+              <td className="approved-outlays-column grand-total-amount">
                 ₹{formatNumber(departmentTotals[dept].approvedOutlays)}
               </td>
-              <td className="sector-total-amount">
-                ₹{formatNumber(departmentTotals[dept].negotiatedLoan)}
+              <td className="negotiated-loan-amount grand-total-amount">
+                {departmentTotals[dept].hasNabard ? "" : 
+                 (departmentTotals[dept].negotiatedLoan > 0 ? `₹${formatNumber(departmentTotals[dept].negotiatedLoan)}` : "")}
               </td>
             </tr>
           );
@@ -1176,11 +1262,11 @@ const SessionBudgetDescriptive = () => {
             />
           </div>
           <div className="session-selector">
-            <span className="label-text">Session:</span>
+            <span className="label-text">Financial Year:</span>
             <Select
               value={selectedSession}
               onChange={setSelectedSession}
-              options={sessionOptions}
+              options={generateSessionOptions()}
               styles={customSelectStyles}
               isSearchable={false}
               placeholder="Select Session"
@@ -1196,28 +1282,20 @@ const SessionBudgetDescriptive = () => {
             <thead>
               <tr>
                 <th className="sl-no-column">Sl No.</th>
-                <th>Project Name</th>
-                <th className="approved-outlays-column">Approved Allocation for {selectedSession.value}</th>
+                <th>Name of the project/scheme</th>
+                <th className="approved-outlays-column">Approved allocation</th>
                 <th>Negotiated Loan</th>
+              </tr>
+              <tr>
+                <th className="sl-no-column">1</th>
+                <th>2</th>
+                <th className="approved-outlays-column">3</th>
+                <th>4</th>
               </tr>
             </thead>
             <tbody>
               {prepareTableRows()}
             </tbody>
-            {budgetData.length > 0 && (
-              <tfoot>
-                <tr className="grand-total-row">
-                  <td className="sl-no-column"></td>
-                  <td className="grand-total-label">Grand Total</td>
-                  <td className="approved-outlays-column grand-total-amount">
-                    ₹{grandTotals.totalApprovedOutlays > 0 ? formatNumber(grandTotals.totalApprovedOutlays) : "0"}
-                  </td>
-                  <td className="grand-total-amount">
-                    ₹{grandTotals.totalNegotiatedLoan > 0 ? formatNumber(grandTotals.totalNegotiatedLoan) : "0"}
-                  </td>
-                </tr>
-              </tfoot>
-            )}
           </table>
         </div>
       </div>

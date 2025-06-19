@@ -5,6 +5,17 @@ import "../styles/Sidebar.css";
 const Sidebar = ({ activeSection, setActiveSection }) => {
   const navItems = [
     {
+      id: "Budgetry Initiative",
+      label: "Budgetry Initiative",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+          <line x1="9" y1="10" x2="15" y2="10"></line>
+          <line x1="9" y1="14" x2="15" y2="14"></line>
+        </svg>
+      )
+    },
+    {
       id: "Others Form",
       label: "Others Form",
       icon: (
@@ -26,17 +37,6 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
           <line x1="16" y1="13" x2="8" y2="13"></line>
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <line x1="10" y1="9" x2="8" y2="9"></line>
-        </svg>
-      )
-    },
-    {
-      id: "New Project Form",
-      label: "New Project Form",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-          <path d="M18 2l-8.5 8.5"></path>
-          <path d="M16 4h4v4"></path>
         </svg>
       )
     },

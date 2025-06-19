@@ -7,7 +7,7 @@
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-.session-budget-descriptive-container {
+.budgetry-initiative-container {
   max-width: 100%;
   width: 100%;
   margin: 0 auto;
@@ -49,7 +49,6 @@ header {
   margin-bottom: 30px;
 }
 
-.department-selector,
 .session-selector {
   display: flex;
   align-items: center;
@@ -107,15 +106,11 @@ th {
   text-align: left;
 }
 
-td {
-  text-align: left;
-  word-wrap: break-word;
-  white-space: normal;
-}
-
-.project-name-column {
-  min-width: 300px;
-  max-width: 400px;
+thead th {
+  padding: 10px 20px;
+  vertical-align: middle;
+  text-align: center;
+  height: 50px;
 }
 
 .sl-no-column {
@@ -125,8 +120,18 @@ td {
   white-space: nowrap;
 }
 
+.others-column {
+  min-width: 250px;
+  max-width: 300px;
+}
+
+.amount-column {
+  text-align: center;
+  vertical-align: middle;
+}
+
 .approved-outlays-column {
-  min-width: 180px;
+  min-width: 300px;
   width: auto;
 }
 
@@ -150,73 +155,140 @@ td {
   font-weight: 500;
 }
 
-.negotiated-loan-amount {
-  font-weight: 500;
-  color: #000;
+.input-with-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.currency-input-container {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 4px;
+  padding: 4px 8px;
+  flex-grow: 1;
+}
+
+.number-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  padding: 4px;
+  font-size: 14px;
+}
+
+.submit-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+  background-color: #3a5fc0;
+}
+
+.submit-button:disabled {
+  background-color: #b0b0b0;
+  cursor: not-allowed;
 }
 
 tbody tr:hover {
   background-color: #f8f9fa;
 }
 
-/* Department header styles */
-.department-header-row {
+.has-sub-projects td {
   background-color: #f8f9fa;
 }
 
-.department-header {
+.parent-row td {
+  background-color: #f8f9fa;
+}
+
+.sub-project-row td {
+  border-top: none;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.sub-project-name {
+  padding-left: 30px !important;
+  font-size: 0.95em;
+}
+
+.total-row td {
+  border-top: 2px solid #ddd;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  background-color: #f8f9fa;
+}
+
+.total-label {
+  font-weight: bold;
+  text-align: left;
+  padding-left: 20px;
+  font-size: 16px;
+}
+
+.total-amount {
   font-weight: bold;
   font-size: 16px;
-  color: #000;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-.sector-total-row {
-  background-color: #eef2ff;
-  border-top: 1px solid var(--primary-color);
-  border-bottom: 1px solid var(--primary-color);
+.add-sub-project-container {
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
 }
 
-.sector-total-label {
-  font-size: 15px;
-  font-weight: bold;
-  color: var(--primary-color);
+.add-sub-project-container .text-input {
+  flex: 1;
+  margin-right: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 14px;
 }
 
-.sector-total-amount {
-  font-weight: bold;
-  color: var(--primary-color);
-  text-align: center;
-}
-
-.grand-total-row {
-  background-color: #f0f0f0;
-  border-top: 2px solid var(--primary-color);
-}
-
-.grand-total-row td {
-  font-weight: bold;
-  font-size: 16px;
-  color: #000;
-  padding: 15px 20px;
-}
-
-.grand-total-label {
+.add-button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
   font-size: 18px;
-  font-weight: bold;
-  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.grand-total-amount {
-  font-weight: bold;
-  color: #000;
-  font-size: 16px;
+.add-button:hover {
+  background-color: #3a5dc0;
 }
 
-/* Mobile Responsiveness */
+.add-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.add-sub-project-row td {
+  border-top: none;
+  border-bottom: 1px solid var(--border-color);
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
 @media (max-width: 768px) {
-  .session-budget-descriptive-container {
+  .budgetry-initiative-container {
     padding: 10px;
   }
 
@@ -234,7 +306,6 @@ tbody tr:hover {
     align-items: stretch;
   }
 
-  .department-selector,
   .session-selector {
     flex-direction: column;
     align-items: flex-start;
@@ -258,10 +329,15 @@ tbody tr:hover {
   .data-container {
     padding: 15px;
   }
+
+  .input-with-button {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 @media (max-width: 480px) {
-  .session-budget-descriptive-container {
+  .budgetry-initiative-container {
     padding: 10px;
   }
 

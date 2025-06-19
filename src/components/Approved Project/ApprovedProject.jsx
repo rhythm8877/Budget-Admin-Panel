@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import Select from "react-select";
 import "./ApprovedProject.css";
 
@@ -8,6 +10,7 @@ const ApprovedProject = () => {
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [date, setDate] = useState("");
   const [amount, setAmount] = useState("");
 
@@ -945,36 +948,52 @@ const ApprovedProject = () => {
   };
 
   // Handle date input to enforce DD/MM/YY format
-  const handleDateChange = (e) => {
+  const handleDateChange = (selectedDate) => {
+    if (selectedDate) {
+      setSelectedDate(selectedDate);
+      
+      // Format date as DD/MM/YY for display
+      const day = selectedDate.getDate().toString().padStart(2, '0');
+      const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+      const year = selectedDate.getFullYear().toString().slice(-2);
+      
+      setDate(`${day}/${month}/${year}`);
+    } else {
+      setSelectedDate(null);
+      setDate('');
+    }
+  };
+
+  // Handle manual date input
+  const handleDateInputChange = (e) => {
     const value = e.target.value;
+    setDate(value);
     
-    // Remove any non-digit characters
-    const digitsOnly = value.replace(/\D/g, '');
-    
-    // Format as DD/MM/YY
-    let formattedDate = '';
-    if (digitsOnly.length > 0) {
-      formattedDate = digitsOnly.substring(0, 2);
-      if (digitsOnly.length > 2) {
-        formattedDate += '/' + digitsOnly.substring(2, 4);
-        if (digitsOnly.length > 4) {
-          formattedDate += '/' + digitsOnly.substring(4, 6);
-        }
+    // Try to parse the manually entered date
+    if (value.match(/^\d{2}\/\d{2}\/\d{2}$/)) {
+      const [day, month, year] = value.split('/');
+      const parsedDate = new Date(2000 + parseInt(year), parseInt(month) - 1, parseInt(day));
+      
+      if (!isNaN(parsedDate.getTime())) {
+        setSelectedDate(parsedDate);
       }
     }
-    
-    setDate(formattedDate);
   };
 
   // Handle number input to prevent non-numeric characters
   const handleNumberKeyDown = (e) => {
-    // Allow only numbers, backspace, delete, tab, arrows, home, end
+    // Allow only numbers, backspace, delete, tab, arrows, home, end, and decimal point
     const allowedKeys = [
       'Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 
-      'Home', 'End', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+      'Home', 'End', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'
     ];
     
     if (!allowedKeys.includes(e.key)) {
+      e.preventDefault();
+    }
+    
+    // Prevent multiple decimal points
+    if (e.key === '.' && e.target.value.includes('.')) {
       e.preventDefault();
     }
   };
@@ -994,19 +1013,27 @@ const ApprovedProject = () => {
       return;
     }
     
+    // Format amount to add "00" if it ends with a decimal point
+    let formattedAmount = amount;
+    if (amount.endsWith('.')) {
+      formattedAmount = amount + "00";
+      setAmount(formattedAmount);
+    }
+    
     // Form submission logic would go here
     console.log({
       sector: selectedSector,
       department: selectedDepartment,
       project: selectedProject,
       date,
-      amount
+      amount: formattedAmount
     });
     
     // Reset form after submission
     setSelectedSector(null);
     setSelectedDepartment(null);
     setSelectedProject(null);
+    setSelectedDate(null);
     setDate("");
     setAmount("");
     
@@ -1095,13 +1122,61 @@ const ApprovedProject = () => {
             
             <div className="form-group">
               <span className="label-text">Date (DD/MM/YY):</span>
-              <input
-                type="text"
-                className="text-input"
-                value={date}
+              <DatePicker
+                selected={selectedDate}
                 onChange={handleDateChange}
-                placeholder="DD/MM/YY"
-                maxLength="8"
+                dateFormat="dd/MM/yy"
+                placeholderText="DD/MM/YY"
+                className="text-input"
+                customInput={
+                  <input
+                    type="text"
+                    value={date}
+                    onChange={handleDateInputChange}
+                  />
+                }
+                renderCustomHeader={({
+                  date,
+                  changeYear,
+                  changeMonth,
+                  decreaseMonth,
+                  increaseMonth,
+                  prevMonthButtonDisabled,
+                  nextMonthButtonDisabled,
+                }) => (
+                  <div className="datepicker-custom-header">
+                    <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled} type="button" className="month-nav-button">
+                      {"<"}
+                    </button>
+                    <div className="month-year-selects">
+                      <select
+                        value={date.getMonth()}
+                        onChange={({ target: { value } }) => changeMonth(value)}
+                        className="month-select"
+                      >
+                        {Array.from({ length: 12 }, (_, i) => (
+                          <option key={i} value={i}>
+                            {new Date(2000, i, 1).toLocaleString('default', { month: 'long' })}
+                          </option>
+                        ))}
+                      </select>
+                      <select
+                        value={date.getFullYear()}
+                        onChange={({ target: { value } }) => changeYear(value)}
+                        className="year-select"
+                      >
+                        {Array.from({ length: 60 }, (_, i) => (
+                          <option key={i} value={1970 + i}>
+                            {1970 + i}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <button onClick={increaseMonth} disabled={nextMonthButtonDisabled} type="button" className="month-nav-button">
+                      {">"}
+                    </button>
+                  </div>
+                )}
               />
             </div>
           </div>
@@ -1112,14 +1187,19 @@ const ApprovedProject = () => {
               <div className="currency-input-container">
                 <span className="currency-symbol">₹</span>
                 <input
-                  type="number"
+                  type="text"
                   className="number-input"
                   value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
+                  onChange={(e) => {
+                    // Allow only numbers and a single decimal point
+                    const value = e.target.value;
+                    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                      setAmount(value);
+                    }
+                  }}
                   onKeyDown={handleNumberKeyDown}
                   onWheel={handleNumberWheel}
-                  min="0"
-                  placeholder="Enter amount"
+                  placeholder="Enter amount (counted in lakh)"
                 />
               </div>
             </div>
